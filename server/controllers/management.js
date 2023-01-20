@@ -4,7 +4,7 @@ import Transaction from "../models/Transaction.js";
 
 export const getAdmins = async (req, res) => {
     try {
-        const admins = await User.find({ role: "admin"}).select("-password");
+        const admins = await User.find().select("-password").sort({_id: -1});
         res.status(200).json(admins);
     } catch(error) {
         res.status(404).json({ message: error.message })
@@ -33,10 +33,13 @@ export const getUserPerformance = async (req, res) => {
                 return Transaction.findById(id);
             })
         );
+        
 
         const filteredSaleTransactions = saleTransactions.filter(
             (transaction) => transaction !== null
         );
+
+        
 
         res.status(200).json({ user: userWithStats[0], sales: filteredSaleTransactions});
 

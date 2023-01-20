@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import {
     Box,
     Divider,
@@ -32,7 +33,7 @@ import {
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import FlexBetween from './FlexBetween';
-import profileImage from "assets/profile.jpg";
+import UserImage from "components/UserImage";
 
 
 const navItems = [
@@ -85,7 +86,7 @@ const navItems = [
         icon: null
     },
     {
-        text: "Admin",
+        text: "Users",
         icon: <AdminPanelSettingsOutlined />
     },
     {
@@ -95,7 +96,6 @@ const navItems = [
 ]
 
 const Sidebar = ({
-    user,
     drawerWidth,
     isSidebarOpen,
     setIsSidebarOpen,
@@ -105,6 +105,8 @@ const Sidebar = ({
     const [active, setActive] = useState("");
     const navigate = useNavigate();
     const theme = useTheme();
+
+    const user = useSelector((state) => state.persistedReducer.user);
 
     useEffect(() => {
         setActive(pathname.substring(1));
@@ -189,18 +191,11 @@ const Sidebar = ({
                         })}
                     </List>
                 </Box>
-                <Box position="absolute" bottom="2rem">
+                <Box >
                     <Divider />
                     <FlexBetween textTransform="none" gap="1rem" m="1.5rem 2rem 0 3rem">
-                        <Box
-                            component="img"
-                            alt="profile"
-                            src={profileImage}
-                            height="40px"
-                            width="40px"
-                            borderRadius="50%"
-                            sx={{ objectFit: "cover"}}
-                        />
+                        
+                        <UserImage image={user.picturePath} height="40px" width="40px" />
                         <Box textAlign="left">
                             <Typography
                                 fontWeight="bold"

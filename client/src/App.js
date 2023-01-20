@@ -4,6 +4,8 @@ import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { themeSettings } from "theme";
+
+import LoginPage from "scenes/loginPage";
 import Dashboard from "scenes/dashboard";
 import Layout from "scenes/layout";
 import Products from "scenes/products";
@@ -17,29 +19,42 @@ import Breakdown from "scenes/breakdown";
 import Admin from "scenes/admin";
 import Performance from "scenes/performance";
 
-function App() {
-  const mode = useSelector((state) => state.global.mode);
-  const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
+import Profile from "scenes/profile";
+import AddUser from "scenes/admin/AddUser";
 
+function App() {
+  const mode = useSelector((state) => 
+  state.persistedReducer.mode
+  );
+  const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
+  const isAuth = Boolean(useSelector((state) => 
+  state.persistedReducer.token
+  ));
+  
   return (
     <div className="app">
       <BrowserRouter>
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Routes>
-            <Route element={<Layout />}>
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/products" element={<Products />} />
-              <Route path="/customers" element={<Customers />} />
-              <Route path="/transactions" element={<Transactions />} />
-              <Route path="/geography" element={<Geography />} />
-              <Route path="/overview" element={<Overview />} />
-              <Route path="/daily" element={<Daily />} />
-              <Route path="/monthly" element={<Monthly />} />
-              <Route path="/breakdown" element={<Breakdown />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/performance" element={<Performance />} />
+            <Route path="/" element={isAuth ? <Navigate to="/dashboard" /> : <LoginPage />} />
+            <Route element={isAuth ? <Layout /> : <Navigate to="/" />}>
+              {/* <Route path="/" element={<Navigate to="/dashboard" replace />} /> */}
+              <Route path="/dashboard" element={isAuth ? <Dashboard /> : <Navigate to="/" />} />
+              <Route path="/Profile" element={isAuth ? <Profile /> : <Navigate to="/" />} />
+
+              <Route path="/products" element={isAuth ? <Products /> : <Navigate to="/" />} />
+              <Route path="/customers" element={isAuth ? <Customers /> : <Navigate to="/" />} />
+              <Route path="/transactions" element={isAuth ? <Transactions /> : <Navigate to="/" />} />
+              <Route path="/geography" element={isAuth ? <Geography /> : <Navigate to="/" />} />
+              <Route path="/overview" element={isAuth ? <Overview /> : <Navigate to="/" />} />
+              <Route path="/daily" element={isAuth ? <Daily /> : <Navigate to="/" />} />
+              <Route path="/monthly" element={isAuth ? <Monthly /> : <Navigate to="/" />} />
+              <Route path="/breakdown" element={isAuth ? <Breakdown /> : <Navigate to="/" />} />
+              <Route path="/users" element={isAuth ? <Admin /> : <Navigate to="/" />} />
+              <Route path="/users/add" element={isAuth ? <AddUser /> : <Navigate to="/" />} />
+
+              <Route path="/performance" element={isAuth ? <Performance /> : <Navigate to="/" />} />
             </Route>
           </Routes>
         </ThemeProvider>

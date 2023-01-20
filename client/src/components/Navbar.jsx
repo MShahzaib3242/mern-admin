@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
     LightModeOutlined,
     DarkModeOutlined,
@@ -9,8 +10,9 @@ import {
 } from '@mui/icons-material';
 import FlexBetween from 'components/FlexBetween';
 import { useDispatch } from 'react-redux';
-import { setMode } from 'state';
-import profileImage from "assets/profile.jpg";
+import { setMode, setLogout } from 'state';
+import UserImage from "components/UserImage";
+
 import { 
     AppBar,
     MenuItem,
@@ -24,19 +26,22 @@ import {
     Menu,
     } from '@mui/material';
 
+    import { useNavigate } from 'react-router-dom';
+
 
 const Navbar = ({
-    user,
     isSidebarOpen,
     setIsSidebarOpen
 }) => {
     const dispatch = useDispatch();
     const theme = useTheme();
+    const user = useSelector((state) => state.persistedReducer.user);
 
     const [anchorEl, setAnchorEl] = useState(null);
     const isOpen = Boolean(anchorEl);
     const handleClick = (event) => setAnchorEl(event.currentTarget);
     const handleClose = () => setAnchorEl(null);
+    const navigate = useNavigate();
 
   return (
         <AppBar
@@ -75,7 +80,11 @@ const Navbar = ({
                             <LightModeOutlined sx={{ fontSize: "25px"}} />
                         )}
                     </IconButton>
-                    <IconButton>
+                    <IconButton
+                    onClick={() => {
+                        navigate(`/profile`); 
+                    }}
+                    >
                         <SettingsOutlined />
                     </IconButton>
 
@@ -90,15 +99,8 @@ const Navbar = ({
                                 gap: "1rem"
                                 }}
                         >
-                            <Box
-                                component="img"
-                                alt="profile"
-                                src={profileImage}
-                                height="32px"
-                                width="32px"
-                                borderRadius="50%"
-                                sx={{ objectFit: "cover"}}
-                            />
+                        <UserImage image={user.picturePath} height="32px" />
+                            
                             <Box textAlign="left">
                                 <Typography
                                     fontWeight="bold"
@@ -125,7 +127,9 @@ const Navbar = ({
                             onClose={handleClose} 
                             anchorOrigin={{vertical: "bottom", horizontal: "center"}}
                         >
-                            <MenuItem onClick={handleClose}>Log Out</MenuItem>
+                            <MenuItem onClick={() => dispatch(setLogout())}>
+                                Log Out
+                            </MenuItem>
                         </Menu>
                     </FlexBetween>
                 </FlexBetween>

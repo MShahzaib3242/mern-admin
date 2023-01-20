@@ -19,7 +19,10 @@ const UserSchema = new mongoose.Schema(
             required: true,
             min: 5,
         },
-        state: String,
+        picturePath: {
+            type: String,
+            default: "",
+        },
         country: String,
         transactions: Array,
         role: {
