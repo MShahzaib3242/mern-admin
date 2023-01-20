@@ -231,18 +231,28 @@ const Admin = () => {
             renderCell: (params) => {
                 return (
                     <>
-                        <Button
-                            onClick={(e) => onDelete(e, params.row)}
-                            variant="contained" 
-                        >
-                            Delete
-                        </Button>
-                        <Button
-                            onClick={(e) => onUpdate(e, params.row)}
-                            variant="contained" 
+                    { user
+                    ? 
+                        <>
+                            <Button
+                                onClick={(e) => onDelete(e, params.row)}
+                                variant="contained" 
                             >
-                            Edit
-                        </Button>
+                                Delete
+                            </Button>
+                            <Button
+                                onClick={(e) => onUpdate(e, params.row)}
+                                variant="contained" 
+                                >
+                                Edit
+                            </Button>
+                        </>
+                    :
+                        <>
+                            <Typography>Access Denied</Typography>
+                        </>
+                    }
+                        
                     </>
                 );
             }
