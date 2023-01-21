@@ -6,10 +6,12 @@ import {
   useMediaQuery,
   Typography,
   useTheme,
+  CircularProgress
 } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { Formik } from "formik";
 import * as yup from "yup";
+import Alert from '@mui/material/Alert';
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setLogin } from "state";
@@ -21,7 +23,8 @@ const registerSchema = yup.object().shape({
   email: yup.string().email("invalid email").required("required"),
   password: yup.string().required("required"),
   country: yup.string().required("required"),
-  picture: yup.string().required("required"),
+  picture: yup.string().nullable(),
+  role: yup.string().required("required"),
 });
 
 const loginSchema = yup.object().shape({
@@ -34,16 +37,24 @@ const initialValuesRegister = {
   email: "",
   password: "",
   country: "",
-  picture: "",
+  picture: "default.jpg",
+  role: "user"
 };
 
 const initialValuesLogin = {
+  name:"",
   email: "",
   password: "",
+  country: "",
+  picture: "",
+  role: "user"
 };
 
 const Form = () => {
   const [pageType, setPageType] = useState("login");
+  const [status, setStatus] = useState(null);
+  const [loader, setLoader] = useState(null);
+
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -52,6 +63,7 @@ const Form = () => {
   const isRegister = pageType === "register";
 
   const register = async (values, onSubmitProps) => {
+    setLoader("loading");
     // this allows us to send form info with image
     const formData = new FormData();
     for (let value in values) {
@@ -68,22 +80,41 @@ const Form = () => {
     );
     const savedUser = await savedUserResponse.json();
     onSubmitProps.resetForm();
-
-    if (savedUser) {
+    
+    if (savedUser.error) {
+      setStatus({
+        type: "msg", 
+        message: savedUser.error
+      }); 
+    } else {
       setPageType("login");
+      setStatus({
+        type: "msg", 
+        message: "Register Successful, Please Login."
+      });
     }
+    setLoader(null);
   };
-
   const login = async (values, onSubmitProps) => {
+    setLoader("loading");
     const loggedInResponse = await fetch(`${process.env.REACT_APP_BASE_URL}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
     });
+    
     const loggedIn = await loggedInResponse.json();
+
+    if(loggedIn.msg) {
+      setStatus({
+        type: "msg", 
+        message: loggedIn.msg
+      }); 
+    }
     
     onSubmitProps.resetForm();
-    if (loggedIn) {
+
+    if (!loggedIn.msg) {
       dispatch(
         setLogin({
           user: loggedIn.user,
@@ -92,6 +123,8 @@ const Form = () => {
       );
       navigate("/dashboard");
     }
+    setLoader(null);
+    
   };
   
   const handleFormSubmit = async (values, onSubmitProps) => {
@@ -100,11 +133,13 @@ const Form = () => {
   };
 
   return (
+    
     <Formik
       onSubmit={handleFormSubmit}
       initialValues={isLogin ? initialValuesLogin : initialValuesRegister}
       validationSchema={isLogin ? loginSchema : registerSchema}
     >
+      
       {({
         values,
         errors,
@@ -210,6 +245,17 @@ const Form = () => {
             />
           </Box>
 
+          <Box>
+          { loader ? 
+              <CircularProgress />
+            : ""}
+            { status ?
+                          <Alert severity="error">{status.message}</Alert>
+                          : ""
+                      }
+            
+          </Box>
+
           {/* BUTTONS */}
           <Box>
             <Button
@@ -231,7 +277,8 @@ const Form = () => {
             </Button>
             <Typography
               onClick={() => {
-                setPageType(isLogin ? "register" : "login");
+                setPageType(isLogin ? "register" : "");
+                setStatus(null); 
                 resetForm();
               }}
               sx={{

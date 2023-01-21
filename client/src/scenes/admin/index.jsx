@@ -74,7 +74,7 @@ const Admin = () => {
 
         const deletedUser = await deleteUser.json();
         if(deletedUser) {
-            console.log(deletedUser)
+            
             setStatus({type: "removed"});
             
         }
@@ -175,7 +175,7 @@ const Admin = () => {
         // onSubmitProps.resetForm();
     };
     
-    console.log(userId);
+    
     const initialValuesUpdate = {
         id: userId._id,
         name:userId.name,
