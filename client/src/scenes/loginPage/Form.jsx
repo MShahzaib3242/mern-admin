@@ -277,7 +277,7 @@ const Form = () => {
             </Button>
             <Typography
               onClick={() => {
-                setPageType(isLogin ? "register" : "");
+                setPageType(isLogin ? "register" : "login");
                 setStatus(null); 
                 resetForm();
               }}
