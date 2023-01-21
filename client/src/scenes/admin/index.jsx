@@ -27,7 +27,15 @@ const UserSchema = yup.object().shape({
     name: yup.string().required("required"),
     email: yup.string().email("invalid email").required("required"),
     password: yup.string().nullable(),
-    newPassword: yup.string().nullable(),
+    country: yup.string().required("required"),
+    role: yup.string().required("required"),
+    picturePath: yup.string().nullable(),
+  });
+
+const AddUserSchema = yup.object().shape({
+    name: yup.string().required("required"),
+    email: yup.string().email("invalid email").required("required"),
+    password: yup.string().required("required"),
     country: yup.string().required("required"),
     role: yup.string().required("required"),
     picturePath: yup.string().nullable(),
@@ -182,7 +190,6 @@ const Admin = () => {
         name:userId.name,
         email: userId.email,
         password: "",
-        newPassword: "",
         country: userId.country,
         picture: userId.picturePath,
         role: userId.role
@@ -371,7 +378,7 @@ const Admin = () => {
                 <Box mt="4rem">
                     <Formik
                         onSubmit={handleFormSubmit}
-                        validationSchema={UserSchema}
+                        validationSchema={isAdd ? AddUserSchema : UserSchema}
                         enableReinitialize={true}
                         initialValues={isAdd ? initialValuesAdd : initialValuesUpdate}
                     >
@@ -506,23 +513,11 @@ const Admin = () => {
                                     <MenuItem value="superadmin">superadmin</MenuItem>
                                 </Select>
                                 {isUpdate ?
+                                <>
                                     <Box sx={{ gridColumn: "span 4" }}>
                                         <Typography>Leave Empty if you don't want to change.</Typography>
                                     </Box>
-                                : ""}
-                                <TextField
-                                    label="Current Password"
-                                    type="password"
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
-                                    value={values.password}
-                                    name="password"
-                                    error={Boolean(touched.password) && Boolean(errors.password)}
-                                    helperText={touched.password && errors.password}
-                                    sx={{ gridColumn: "span 4" }}
-                                />
-
-                                {isUpdate ? 
+                                 
                                     <TextField
                                         label="New Password"
                                         type="password"
@@ -534,6 +529,21 @@ const Admin = () => {
                                         helperText={touched.newPassword && errors.newPassword}
                                         sx={{ gridColumn: "span 4" }}
                                     />
+                                </>
+                                : ""}
+                                {isAdd ?
+                                    <TextField
+                                        label="Enter Password"
+                                        type="password"
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        value={values.password}
+                                        name="password"
+                                        error={Boolean(touched.password) && Boolean(errors.password)}
+                                        helperText={touched.password && errors.password}
+                                        sx={{ gridColumn: "span 4" }}
+                                    />
+
                                 : ""}
 
                                 <Button

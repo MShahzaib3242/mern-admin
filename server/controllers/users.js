@@ -29,8 +29,32 @@ export const verifyAdmin = async (req, res) => {
 // UPDATE USER 
 export const updateUser = async (req, res) => {
   try {
-      const { id, name, email, password, country, picturePath, role } = req.body;
+      const { id, name, email, newPassword, country, picturePath, role } = req.body;
 
+      var password = req.body.password;
+            
+      const user = await User.findById(id);
+
+      if(password) {
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) return res.status(400).json({ message: "Invalid Password. " });
+      } else {
+        password = user.password;
+      }
+
+
+      const salt = await bcrypt.genSalt();
+      if(newPassword) {
+        password = await bcrypt.hash(newPassword, salt);
+
+        console.log("updated");
+
+      } else {
+
+        password = await bcrypt.hash(password, salt);
+        console.log("Empty String");
+      }
+      
       const Updateuser = await User.updateOne({"_id": id}, {$set: {
         name: name,
         email: email,
@@ -40,7 +64,6 @@ export const updateUser = async (req, res) => {
         role: role
       }});
       
-      const user = await User.findById(id);
       
       const token = jwt.sign({ id: id }, process.env.JWT_SECRET);
 

@@ -22,6 +22,7 @@ const updateSchema = yup.object().shape({
     name: yup.string().required("required"),
     email: yup.string().email("invalid email").required("required"),
     password: yup.string().required("required"),
+    newPassword: yup.string().nullable(),
     country: yup.string().required("required"),
     picturePath: yup.string().nullable(),
   });
@@ -111,7 +112,8 @@ const UpdateForm = () => {
         id: user._id,
         name:user.name,
         email: user.email,
-        password: user.password,
+        password: "",
+        newPassword: "",
         country: user.country,
         picture: user.picturePath,
         role: user.role,
@@ -238,7 +240,39 @@ const UpdateForm = () => {
                 </Dropzone>
 
               </Box>
-              
+
+              <TextField
+                  label="Current Password"
+                  type="password"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.password}
+                  name="password"
+                  error={Boolean(touched.password) && Boolean(errors.password)}
+                  helperText={touched.password && errors.password}
+                  sx={{ gridColumn: "span 4" }}
+              />
+
+              <Box sx={{ gridColumn: "span 4" }}>
+                <Typography fontSize="0.7rem">Leave Empty if you don't want to change the Password.</Typography>
+              </Box>
+
+              <TextField
+                  label="New Password"
+                  type="password"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.newPassword}
+                  
+                  name="newPassword"
+                  error={Boolean(touched.newPassword) && Boolean(errors.newPassword)}
+                  helperText={touched.newPassword && errors.newPassword}
+                  InputProps={{
+                      min: 5,
+                      max: 100
+                  }}
+                  sx={{ gridColumn: "span 4" }}
+              />
               
 
                 <Box gridColumn="span 4">
