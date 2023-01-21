@@ -96,6 +96,7 @@ const Admin = () => {
     };
 
     const onUpdate = async (e, row) => {
+        setLoader("loading");
         e.stopPropagation();
 
         const response = await fetch(`${process.env.REACT_APP_BASE_URL}/users/profile/${row._id}`, {
@@ -106,7 +107,7 @@ const Admin = () => {
 
         setPageType("update");
         setUserId(iD);
-        
+        setLoader(null);
     }
 
     const add = async (values, onSubmitProps) => {
