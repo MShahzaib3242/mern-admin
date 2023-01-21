@@ -2,7 +2,7 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, HashRouter } from "react-router-dom";
 import { themeSettings } from "theme";
 
 import LoginPage from "scenes/loginPage";
@@ -33,7 +33,7 @@ function App() {
   
   return (
     <div className="app">
-      <BrowserRouter>
+      <HashRouter>
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Routes>
@@ -58,7 +58,7 @@ function App() {
             </Route>
           </Routes>
         </ThemeProvider>
-      </BrowserRouter>
+      </HashRouter>
     </div>
   );
 }
