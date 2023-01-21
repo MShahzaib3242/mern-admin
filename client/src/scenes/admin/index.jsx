@@ -26,7 +26,8 @@ import * as yup from "yup";
 const UserSchema = yup.object().shape({
     name: yup.string().required("required"),
     email: yup.string().email("invalid email").required("required"),
-    password: yup.string().required("required"),
+    password: yup.string().nullable(),
+    newPassword: yup.string().nullable(),
     country: yup.string().required("required"),
     role: yup.string().required("required"),
     picturePath: yup.string().nullable(),
@@ -180,7 +181,8 @@ const Admin = () => {
         id: userId._id,
         name:userId.name,
         email: userId.email,
-        password: userId.password,
+        password: "",
+        newPassword: "",
         country: userId.country,
         picture: userId.picturePath,
         role: userId.role
@@ -234,18 +236,33 @@ const Admin = () => {
                     { user
                     ? 
                         <>
-                            <Button
-                                onClick={(e) => onDelete(e, params.row)}
-                                variant="contained" 
-                            >
-                                Delete
-                            </Button>
-                            <Button
-                                onClick={(e) => onUpdate(e, params.row)}
-                                variant="contained" 
+                            {user._id === params.row._id ?
+                                <>
+                                    <Button
+                                        onClick={(e) => navigate("/profile")}
+                                        variant="contained" 
+                                    >
+                                        Edit Your Profile
+                                    </Button>
+                                </>
+                            : 
+                            <>
+                                <Button
+                                    onClick={(e) => onDelete(e, params.row)}
+                                    variant="contained" 
                                 >
-                                Edit
-                            </Button>
+                                    Delete
+                                </Button>
+                                <Button
+                                    onClick={(e) => onUpdate(e, params.row)}
+                                    variant="contained" 
+                                    >
+                                    Edit
+                                </Button>
+                            </>
+                            
+                            }
+                            
                         </>
                     :
                         <>
@@ -488,9 +505,13 @@ const Admin = () => {
                                     <MenuItem value="admin">admin</MenuItem>
                                     <MenuItem value="superadmin">superadmin</MenuItem>
                                 </Select>
-
+                                {isUpdate ?
+                                    <Box sx={{ gridColumn: "span 4" }}>
+                                        <Typography>Leave Empty if you don't want to change.</Typography>
+                                    </Box>
+                                : ""}
                                 <TextField
-                                    label="Password"
+                                    label="Current Password"
                                     type="password"
                                     onBlur={handleBlur}
                                     onChange={handleChange}
@@ -500,6 +521,20 @@ const Admin = () => {
                                     helperText={touched.password && errors.password}
                                     sx={{ gridColumn: "span 4" }}
                                 />
+
+                                {isUpdate ? 
+                                    <TextField
+                                        label="New Password"
+                                        type="password"
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        value={values.newPassword}
+                                        name="newPassword"
+                                        error={Boolean(touched.newPassword) && Boolean(errors.newPassword)}
+                                        helperText={touched.newPassword && errors.newPassword}
+                                        sx={{ gridColumn: "span 4" }}
+                                    />
+                                : ""}
 
                                 <Button
                                     fullWidth
