@@ -8,7 +8,8 @@ import {
     Button,
     Typography,
     Select,
-    MenuItem
+    MenuItem,
+    CircularProgress
     } from '@mui/material';
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import Alert from '@mui/material/Alert';
@@ -46,6 +47,7 @@ const Admin = () => {
     const isRead = pageType === "read"
     const isAdd = pageType === "add";
     const isUpdate = pageType === "update";
+    const [loader, setLoader] = useState(null);
 
     const isNonMobile = useMediaQuery("(min-width:600px)");
     const [user, setUser] = useState(null);
@@ -75,6 +77,8 @@ const Admin = () => {
       
 
     const onDelete = async (e, row) => {
+        setLoader("loading");
+
         e.stopPropagation();
     
         const deleteUser = await fetch(`${process.env.REACT_APP_BASE_URL}/users/delete/${row._id}`, {
@@ -87,6 +91,7 @@ const Admin = () => {
             setStatus({type: "removed"});
             
         }
+        setLoader(null);
     
     };
 
@@ -105,6 +110,7 @@ const Admin = () => {
     }
 
     const add = async (values, onSubmitProps) => {
+        setLoader("loading");
         
         // this allows us to send form info with image
         const formData = new FormData();
@@ -140,10 +146,11 @@ const Admin = () => {
             
         }
         onSubmitProps.resetForm();
-        
+        setLoader(null);
     };
 
     const update = async (values, onSubmitProps) => {
+        setLoader("loading");
         
         // this allows us to send form info with image
         const formData = new FormData();
@@ -182,6 +189,7 @@ const Admin = () => {
         }
         
         // onSubmitProps.resetForm();
+        setLoader(null);
     };
     
     
@@ -287,6 +295,9 @@ const Admin = () => {
     <Box m="1.5rem 2.5rem">
         <FlexBetween>
             <Header title={isRead ? "USERS" : "" || isAdd ? "Add User" : "" || isUpdate ? "Update User" : "" } subtitle="Managing Users and list of Admins" />
+            { loader ?
+                <CircularProgress />
+            : ""}
             { user ?
                     <Box>
                         <Button

@@ -6,7 +6,8 @@ import {
     useMediaQuery, 
     TextField, 
     Button,
-    Typography
+    Typography,
+    CircularProgress
     } from '@mui/material';
 
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
@@ -27,15 +28,12 @@ const updateSchema = yup.object().shape({
     picturePath: yup.string().nullable(),
   });
 
-  
-
-  
-
 const UpdateForm = () => {
 
     const [user, setUser] = useState(null);
     const [status, setStatus] = useState(null);
     const [removeImg, setRemoveImg] = useState(null);
+    const [loader, setLoader] = useState(null);
 
     const userId = useSelector((state) => state.persistedReducer.user);
     const token = useSelector((state) => state.persistedReducer.token);
@@ -63,7 +61,8 @@ const UpdateForm = () => {
     if (!user) return null;
 
     const update = async (values, onSubmitProps) => {
-        
+        setLoader("loading");
+
         // this allows us to send form info with image
         const formData = new FormData();
         for (let value in values) {
@@ -104,7 +103,7 @@ const UpdateForm = () => {
           setStatus({type: "success"});
 
         }
-        
+        setLoader(null);
         // onSubmitProps.resetForm();
       };
 
@@ -276,6 +275,9 @@ const UpdateForm = () => {
               
 
                 <Box gridColumn="span 4">
+                  { loader ?
+                      <CircularProgress />
+                  : ""}
                   { status?.type === "success" &&
                         <Alert severity="success">Information is Updated!</Alert>
                       }
