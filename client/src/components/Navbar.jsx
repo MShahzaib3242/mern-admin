@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import {
     LightModeOutlined,
@@ -26,8 +26,9 @@ import {
     Menu,
     } from '@mui/material';
 
-    import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
+const INACTIVITY_TIME_LIMIT = 1000 * 60 * 30;
 
 const Navbar = ({
     isSidebarOpen,
@@ -42,6 +43,23 @@ const Navbar = ({
     const handleClick = (event) => setAnchorEl(event.currentTarget);
     const handleClose = () => setAnchorEl(null);
     const navigate = useNavigate();
+    const [inactivityTimer, setInactivityTimer] = useState(null);
+
+    useEffect(() => {
+        const resetTimer = () => {
+            clearTimeout(inactivityTimer);
+            setInactivityTimer(setTimeout(() => dispatch(setLogout()), INACTIVITY_TIME_LIMIT));
+    
+        };
+    
+        document.addEventListener("click", resetTimer);
+        document.addEventListener("touchstart", resetTimer);
+
+        return () => {
+            document.removeEventListener("click", resetTimer);
+            document.removeEventListener("touchstart", resetTimer);
+        };
+    }, [inactivityTimer]); // eslint-disable-next-line
 
   return (
         <AppBar

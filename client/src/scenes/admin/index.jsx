@@ -12,6 +12,7 @@ import {
     CircularProgress
     } from '@mui/material';
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import Stack from '@mui/material/Stack';
 import Alert from '@mui/material/Alert';
 import { PersonAdd } from '@mui/icons-material';
 import { useGetAdminsQuery } from 'state/api';
@@ -63,7 +64,7 @@ const Admin = () => {
 
     const getUser = async () => {
         setStatus(null);
-        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/users/verifyadmin/${userData._id}`, {
+        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/users/verifysuperadmin/${userData._id}`, {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -297,7 +298,9 @@ const Admin = () => {
         <FlexBetween>
             <Header title={isRead ? "USERS" : "" || isAdd ? "Add User" : "" || isUpdate ? "Update User" : "" } subtitle="Managing Users and list of Admins" />
             { loader ?
-                <CircularProgress />
+                <Stack sx={{color: theme.palette.secondary[300]}}>
+                    <CircularProgress color="secondary"  />
+                </Stack>
             : ""}
             { user ?
                     <Box>

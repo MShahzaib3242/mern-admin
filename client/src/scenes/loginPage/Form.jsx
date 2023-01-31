@@ -8,6 +8,7 @@ import {
   useTheme,
   CircularProgress
 } from "@mui/material";
+import Stack from '@mui/material/Stack';
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -90,7 +91,7 @@ const Form = () => {
       setPageType("login");
       setStatus({
         type: "msg", 
-        message: "Register Successful, Please Login."
+        message: "Register Successful, Please Try Login."
       });
     }
     setLoader(null);
@@ -247,7 +248,9 @@ const Form = () => {
 
           <Box>
           { loader ? 
-              <CircularProgress />
+              <Stack sx={{color: theme.palette.secondary[300]}}>
+                <CircularProgress color="secondary"  />
+              </Stack>
             : ""}
             { status ?
                           <Alert severity="error">{status.message}</Alert>

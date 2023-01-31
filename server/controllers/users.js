@@ -14,17 +14,6 @@ export const getUser = async (req, res) => {
   }
 };
 
-/* READ */
-export const verifyAdmin = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const user = await User.findOne({"_id": id, "role": "superadmin"});
-    
-    res.status(200).json(user);
-  } catch (err) {
-    res.status(404).json({ message: err.message });
-  }
-};
 
 // UPDATE USER 
 export const updateUser = async (req, res) => {
@@ -118,3 +107,28 @@ export const deleteUser = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 }
+
+
+/* READ */
+export const verifyAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findOne({$and: [{"_id": id}, {$or:[{"role": "admin"}, {"role": "superadmin"}]}]});
+    
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+};
+
+/* READ */
+export const verifySuperAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findOne({"_id": id, "role": "superadmin"});
+    
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+};

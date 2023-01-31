@@ -102,3 +102,31 @@ export const getGeography = async (req, res) => {
         res.status(404).json({ message: error.message })
     }
 };
+
+export const addProducts = async (req, res) => {
+    try {
+        const {
+            name,
+            price,
+            description,
+            category,
+            rating,
+            supply,
+          } = req.body;
+        
+        const newProduct = new Product({
+            name,
+            price,
+            description,
+            category,
+            rating,
+            supply
+        });
+          
+        const savedProduct = await newProduct.save();
+        res.status(201).json(savedProduct);
+        
+    } catch (error) {
+        res.status(404).json({ message: error.message })
+    }
+};

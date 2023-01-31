@@ -12,7 +12,7 @@ const LoginPage = () => {
         p="1rem 6%"
         textAlign="center"
       >
-        <Typography fontWeight="bold" fontSize="32px" color="primary">
+        <Typography fontWeight="bold" fontSize="32px" color={theme.palette.secondary[100]}>
           M E R N Stack Admin Panel by SHAHZAIB
         </Typography>
       </Box>
@@ -24,7 +24,7 @@ const LoginPage = () => {
         borderRadius="1.5rem"
         backgroundColor={theme.palette.background.alt}
       >
-        <Typography fontWeight="500" variant="h5" sx={{ mb: "1.5rem" }}>
+        <Typography fontWeight="500" variant="h5" sx={{ mb: "1.5rem", color:theme.palette.secondary[300] }}>
           Welcome to React Admin Panel, the admin panel for ecommerce website.
         </Typography>
         <Form />
