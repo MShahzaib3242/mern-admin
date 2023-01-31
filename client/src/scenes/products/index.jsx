@@ -56,6 +56,27 @@ const Product = ({
 }) => {
     const theme = useTheme();
     const [isExpanded, setIsExpanded] = useState(false);
+    const [loader, setLoader] = useState(null);
+    const [status, setStatus] = useState(null);
+
+    const onDelete = async (e, _id) => {
+        setLoader("loading");
+
+        e.stopPropagation();
+        console.log(e);
+        const deleteUser = await fetch(`${process.env.REACT_APP_BASE_URL}/client/product/delete/${_id}`, {
+            method: "GET"
+        });
+
+        const deletedUser = await deleteUser.json();
+        if(deletedUser) {
+            
+            setStatus({type: "removed"});
+            
+        }
+        setLoader(null);
+    
+    };
 
     return (
         <Card
@@ -107,7 +128,23 @@ const Product = ({
                     <Typography>Supply Left: {supply}</Typography>
                     <Typography>Yearly Sales This Year: {stat.yearlySalesTotal}</Typography>
                     <Typography>Yearly Units Sold This Year: {stat.yearlyTotalSoldUnits }</Typography>
-                </CardContent>
+                </CardContent> 
+                <Button
+                    onClick={(e) => onDelete(e, _id)}
+                    variant="contained" 
+                >
+                    Delete
+                </Button>
+                { loader ?
+                <Stack sx={{color: theme.palette.secondary[300]}}>
+                    <CircularProgress color="secondary"  />
+                </Stack>
+                : ""}
+                <Box gridColumn="span 4" mt="2rem">
+                    { status?.type === "removed" &&
+                            <Alert severity="success">Record Removed Successfully!</Alert>
+                        }
+                </Box>
             </Collapse>
         </Card>
     )
